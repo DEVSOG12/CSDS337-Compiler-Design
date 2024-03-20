@@ -1,0 +1,435 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{lipsum} %This package just generates Lorem Ipsum filler text. 
+\usepackage{fullpage} % changes the margin
+\usepackage[a4paper, total={7in, 10in}]{geometry}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb,amsthm}  % assumes amsmath package installed
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{verbatim}
+\usepackage[numbered]{mcode}
+\usepackage{float}
+\usepackage{tikz}
+    \usetikzlibrary{shapes,arrows}
+    \usetikzlibrary{arrows,calc,positioning}
+
+    \tikzset{
+        block/.style = {draw, rectangle,
+            minimum height=1cm,
+            minimum width=1.5cm},
+        input/.style = {coordinate,node distance=1cm},
+        output/.style = {coordinate,node distance=4cm},
+        arrow/.style={draw, -latex,node distance=2cm},
+        pinstyle/.style = {pin edge={latex-, black,node distance=2cm}},
+        sum/.style = {draw, circle, node distance=1cm},
+    }
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage[shortlabels]{enumitem}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+    
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+
+\newenvironment{problem}[2][Problem]
+    { \begin{mdframed}[backgroundcolor=gray!20] \textbf{#1 #2} \\}
+    {  \end{mdframed}}
+
+% Define solution environment
+\newenvironment{solution}
+    {\textit{Solution:}}
+    {}
+
+\renewcommand{\qed}{\quad\qedsymbol}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%Header-Make sure you update this information!!!!
+\noindent
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\large\textbf{Oreofe Solarin} \hfill \textbf{Problem Set - 3}   \\
+Email: ons8@case.edu \hfill ID: 123456789 \\
+\normalsize Course: CSDS 337 - Compiler Design \hfill Term: Spring 2024\\
+Instructor: Dr. Vipin Chaudhary \hfill Due Date: $28^{th}$ Feb, 2024 \\ \\
+Number of hours delay for this Problem Set: \hfill\\
+Cumulative number of hours delay so far: \hfill 3 \\ \\
+I discussed this homework with: \hfill  \\ \\
+%\underline{\bf SUBMISSION GUIDELINES:} Submit a zip file that includes the %written answers and the flex file for Problem 4. \\
+
+\noindent\rule{7in}{2.8pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{problem}{1 - 10 points}
+Design grammar for the following language:
+
+\begin{itemize}
+    \item The set of all strings of 0s and 1s such that every 0 is immediately followed by at least one 1.
+\end{itemize}
+
+\end{problem}
+\begin{solution}
+\begin{align*}
+S & \rightarrow 1S \,|\, 01S \,|\, \varepsilon
+\end{align*}
+\end{solution} 
+\noindent\rule{7in}{2.8pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{problem}{2 - 20 points}
+The following is a grammar for regular expressions over symbols $a$ and $b$ only, using $+$ in place of $|$ for union, to avoid conflict with the use  of vertical bar as a metasymbol in grammars:  \\
+
+\noindent $rexpr \rightarrow rexpr + rterm \quad | \quad rterm  \\
+rterm \rightarrow rterm  \quad rfactor \quad | \quad rfactor  \\
+rfactor \rightarrow rfactor * \quad | \quad rprimary  \\
+rprimary \rightarrow a | b$ \\
+
+\begin{enumerate}[a]
+    \item Left factor this grammar.
+    \item Does left factoring make the grammar suitable for top-down parsing?
+    \item In addition to left factoring, eliminate left recursion from the original  grammar.
+    \item Is the resulting grammar suitable for top-down parsing?
+\end{enumerate}
+
+\end{problem}
+\begin{solution}
+\begin{enumerate}[a]
+
+\item
+
+We can use the common prefixes:
+- For `rexpr`: `rexpr` 
+- For `rterm`: `rterm`
+- For `rfactor`: `rfactor`
+
+So, the left factored grammar becomes:
+
+\begin{align*}
+rexpr &\rightarrow rterm \ rexpr' \\
+rexpr' &\rightarrow + \ rterm \ rexpr' \quad | \quad \varepsilon \\
+rterm &\rightarrow rfactor \ rterm' \\
+rterm' &\rightarrow rfactor \ rterm' \quad | \quad \varepsilon \\
+rfactor &\rightarrow rprimary \ rfactor' \\
+rfactor' &\rightarrow * \ rfactor' \quad | \quad \varepsilon \\
+rprimary &\rightarrow a \quad | \quad b
+\end{align*}
+
+\item Left factoring does not necessarily make a grammar suitable for top-down parsing. Left factoring  helps to avoid ambiguity and reduce the number of alternatives, it doesn't inherently ensure suitability for top-down parsing. The suitability for top-down parsing also depends on whether the grammar is left recursive or not, among other factors.
+
+\item We can rewrite productions to remove direct or indirect left recursion. The given grammar has a indirect left recursion:
+
+
+
+Rewriting the grammar to remove this indirect left recursion. 
+
+\begin{align*}
+rexpr &\rightarrow rterm \ rexpr' \\
+rexpr' &\rightarrow + \ rterm \ rexpr' \quad | \quad \varepsilon \\
+rterm &\rightarrow rfactor \ rterm' \\
+rterm' &\rightarrow rfactor \ rterm' \quad | \quad \varepsilon \\
+rfactor &\rightarrow rprimary \ rfactor' \\
+rfactor' &\rightarrow * \ rfactor' \quad | \quad \varepsilon \\
+rprimary &\rightarrow a \quad | \quad b
+\end{align*}
+
+
+d. The resulting grammar is suitable for top-down parsing. It's non-ambiguous, non-left recursive, and has a clear start symbol.
+
+\end{enumerate}
+\end{solution} 
+\noindent\rule{7in}{2.8pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{problem}{3 - 20 points}
+Consider the grammar for $S  \longrightarrow S + S | SS | (S) | S * | a $ and the string $(a + a)* a$. 
+
+\begin{enumerate}[a]
+    \item Devise a predictive parser and show the parsing tables. You may use left-factor and/or eliminate left-recursion from your grammar first.
+    \item Compute FIRST and FOLLOW for your grammar. 
+\end{enumerate}
+
+\end{problem}
+
+\begin{solution}
+\begin{enumerate}[a]
+    \item 
+Left-factored Grammar:
+\[ S \longrightarrow aS' \ | \ (S)S' \]
+\[ S' \longrightarrow +S \ | \ \epsilon \ | \ *S \]
+
+Parsing table:
+
+\[
+\begin{array}{|c|c|c|c|c|c|c|}
+\hline
+& a & ( & ) & + & * & \$ \\
+\hline
+S & S \longrightarrow aS' & S \longrightarrow (S)S' & & & & \\
+\hline
+S' & & & S' \longrightarrow \epsilon & S' \longrightarrow +S & S' \longrightarrow *S & S' \longrightarrow \epsilon \\
+\hline
+\end{array}
+\]
+
+We can construct the predictive parser using the parsering table above
+
+\begin{enumerate}
+    \item Initialize stack with start symbol $S$ and input string.
+    \item Repeat until the stack is empty:
+    \begin{enumerate}[a]
+        \item If the top of the stack is a terminal symbol, match it with the input symbol and pop both.
+        \item If the top of the stack is a non-terminal symbol:
+        \begin{enumerate}
+            \item Look up the corresponding entry in the parsing table.
+            \item Replace the non-terminal symbol on the stack with the production from the parsing table.
+        \end{enumerate}
+    \end{enumerate}
+    \item If at the end, the stack is empty, and the input string is fully parsed, accept. Otherwise, reject.
+\end{enumerate}
+
+
+ 
+    \item For the FIRST sets:
+
+\[ FIRST(S) = \{a, (\} \]
+\[ FIRST(S') = \{+, *, \epsilon\} \]
+
+For the FOLLOW sets:
+
+\[ FOLLOW(S) = \{\$, ), +, *\} \]
+\[ FOLLOW(S') = \{\$, ), +, *\} \]
+\end{enumerate}
+\end{solution} 
+
+\noindent\rule{7in}{2.8pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 4
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{problem}{4 - 10 points}
+Give the bottom-up parses for the following input string and grammar: $aaa*a++$ and $S  \longrightarrow SS+ | SS* | a $. 
+
+\end{problem}
+
+\begin{solution}
+We start with an empty stack and the input string to the left of the pointer.
+
+\noindent Step 1:\\
+\quad Stack: [ ]\\
+\quad Remaining input: $aaa*a++$ \\
+
+\noindent Step 2:\\
+\quad Apply a shift operation for the first three 'a's.\\
+\quad Stack: [aaa]\\
+\quad Remaining input: $*a++$ \\
+
+\noindent Step 3:\\
+\quad Apply a shift operation for '*'.\\
+\quad Stack: [aaa, *]\\
+\quad Remaining input: $a++$ \\
+
+\noindent Step 4:\\
+\quad Apply a shift operation for 'a'.\\
+\quad Stack: [aaa, *a]\\
+\quad Remaining input: $++$ \\
+
+\noindent Step 5:\\
+\quad Apply a reduce operation by replacing 'a' with $S$.\\
+\quad Stack: [aaa, $S$]\\
+\quad Remaining input: $++$ \\
+
+\noindent Step 6:\\
+\quad Apply a reduce operation by replacing '$S$*$S$' with $S$.\\
+\quad Stack: [$S$]\\
+\quad Remaining input: $++$ \\ 
+
+\noindent Step 7:\\
+\quad Apply a shift operation for '+'.\\
+\quad Stack: [$S$, +]\\
+\quad Remaining input: $+$ \\
+
+\noindent Step 8:\\
+\quad Apply a shift operation for '+'.\\
+\quad Stack: [$S$, +, +]\\
+\quad Remaining input:  \\
+
+\noindent Step 9:\\
+\quad Apply a reduce operation by replacing '+' with $S$.\\
+\quad Stack: [$S$, $S$]\\
+\quad Remaining input:  \\
+
+\noindent Step 10:\\
+\quad Apply a reduce operation by replacing '$S$+$S$' with $S$.\\
+\quad Stack: [$S$]\\
+\quad Remaining input:  \\
+
+\noindent Now, the stack contains only the start symbol $S$ and there's no remaining input. So, the bottom-up parse is successful, and the given input string is parsed by the grammar.
+\end{solution}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{problem}{5 - 20 points}
+Construct the SLR sets of items for the (augmented) grammar $S  \longrightarrow SS+ | SS* | a $. Compute the GOTO function for these sets of items. Show the parsing table for this grammar. Is this grammar SLR?
+
+\end{problem}
+
+\begin{solution}
+\noindent LR(0) items:
+\begin{align*}
+S' & \rightarrow \cdot S \\
+S & \rightarrow \cdot SS+ \\
+S & \rightarrow \cdot SS* \\
+S & \rightarrow \cdot a \\
+S & \rightarrow S \cdot S+ \\
+S & \rightarrow S \cdot S* \\
+S & \rightarrow S \cdot a \\
+\end{align*}
+
+\noindent The GOTO function items:
+
+\begin{align*}
+GOTO(0, S) &= 1 \\
+GOTO(0, a) &= 3 \\
+GOTO(1, S) &= 2 \\
+GOTO(1, a) &= 3 \\
+GOTO(2, +) &= 4 \\
+GOTO(2, *) &= 5 \\
+GOTO(2, \$) &= \text{accept} \\
+GOTO(3, S) &= 6 \\
+GOTO(3, a) &= 3 \\
+GOTO(4, S) &= 7 \\
+GOTO(4, a) &= 3 \\
+GOTO(5, S) &= 8 \\
+GOTO(5, a) &= 3 \\
+GOTO(6, +) &= 4 \\
+GOTO(6, *) &= 5 \\
+GOTO(6, \$) &= \text{accept} \\
+GOTO(7, +) &= 4 \\
+GOTO(7, *) &= 5 \\
+GOTO(7, \$) &= \text{accept} \\
+GOTO(8, +) &= 4 \\
+GOTO(8, *) &= 5 \\
+GOTO(8, \$) &= \text{accept} \\
+\end{align*}
+
+
+\noindent Parsing table:
+\[\begin{array}{|c|c|c|c|c|}
+\hline
+\text{State} & a & + & * & \$ \\
+\hline
+0 & s3 & & & \\
+1 & s3 & & & \\
+2 &  & s4 & s5 & accept \\
+3 & s3 & & & r3 \\
+4 & s3 & & & r1 \\
+5 & s3 & & & r2 \\
+6 & s3 & s4 & s5 & \\
+7 & s3 & r1 & r1 & \\
+8 & s3 & r2 & r2 & \\
+\hline
+\end{array}
+\]
+
+\noindent "s" stands for shift, "r" stands for reduce, and "accept".
+
+\noindent Looking at the table, we can see that there are no conflicts, so the grammar is SLR(1).
+
+\noindent Thus, we have successfully constructed the SLR sets of items, computed the GOTO function, showed the parsing table, and determined that the grammar is SLR.
+\end{solution} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 6
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{problem}{6 - 20 points}
+Construct the canonical parsing table for the following augmented grammar:
+
+\noindent $S'  \longrightarrow S \\
+S \longrightarrow AA \\ 
+A \longrightarrow a A | b $\\
+
+\end{problem}
+
+\begin{solution}
+
+\noindent LR(0) items:
+
+\begin{enumerate}
+    \item  \(\textbf{S'} \longrightarrow \cdot \textbf{S}\)
+    \item \(\textbf{S} \longrightarrow \cdot \textbf{AA}\)
+    \item \(\textbf{S} \longrightarrow \textbf{A} \cdot \textbf{A}\)
+    \item \(\textbf{A} \longrightarrow \cdot \textbf{aA}\)
+    \item  \(\textbf{A} \longrightarrow \cdot \textbf{b}\)
+\end{enumerate}
+
+\noindent The parsing table using these LR(0) items:
+
+\noindent States (Closure of LR(0) items):
+
+\noindent \textbf{State 0}: \(\textbf{S'} \longrightarrow \cdot \textbf{S}\) \\
+
+\noindent \textbf{State 1}:
+\begin{enumerate}
+\item 
+\(\textbf{S'} \longrightarrow \textbf{S} \cdot\)
+    \item 
+\(\textbf{S} \longrightarrow \cdot \textbf{AA}\)
+    \item 
+\(\textbf{A} \longrightarrow \cdot \textbf{aA}\)
+    \item 
+\(\textbf{A} \longrightarrow \cdot \textbf{b}\)
+    
+\end{enumerate} 
+\noindent \textbf{State 2}:
+\begin{enumerate}
+    \item 
+\(\textbf{S} \longrightarrow \textbf{A} \cdot \textbf{A}\)
+    \item 
+\(\textbf{A} \longrightarrow \cdot \textbf{aA}\)
+    \item 
+\(\textbf{A} \longrightarrow \cdot \textbf{b}\)
+    
+\end{enumerate}
+\noindent \textbf{State 3}:  \(\textbf{S} \longrightarrow \textbf{AA} \cdot\) \\
+\noindent  \textbf{State 4}: \(\textbf{A} \longrightarrow \textbf{a} \cdot \textbf{A}\) \\
+\noindent  \textbf{State 5}: \(\textbf{A} \longrightarrow \textbf{b} \cdot\)
+
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+State & \(\textbf{a}\) & \(\textbf{b}\) & \(\textbf{S}\) & \(\textbf{A}\) & \(\textbf{\$}\) \\
+\hline
+0 &  &  & 1 &  &  \\
+1 &  &  &  & 2 & \textbf{Acc} \\
+2 & 4 & 5 &  &  &  \\
+3 &  &  &  &  &  \\
+4 &  &  &  &  &  \\
+5 &  &  &  &  &  \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent Acc denotes accepting the input
+
+\end{solution}
+
+\noindent\rule{7in}{2.8pt}
+
+\end{document}
+ 

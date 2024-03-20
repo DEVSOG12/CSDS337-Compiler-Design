@@ -1,0 +1,88 @@
+
+
+%%
+[ \t]+ { ECHO; }
+\n { ECHO; }
+
+"/*" { BEGIN COMMENT; }
+<COMMENT>"*/" { BEGIN 0; }
+
+<COMMENT>.|\n { ECHO; }
+
+"for" { f++; }
+"do" { d++; }
+"while" { w++; }
+"and" { a++; }
+
+%%
+
+
+int main(int argc, char *argv[]) {
+  if (argc < 2) {
+    printf("Usage: %s <input file>\n", argv[0]);
+    return 1;
+  }
+
+  FILE *file;
+  int c, w, l;
+  int f, d, w, a;
+  int total_c, total_w, total_l;
+  int total_f, total_d, total_w, total_a;
+
+  total_c = total_w = total_l = 0;
+  total_f = total_d = total_w = total_a = 0;
+
+  for (int i = 1; i < argc; i++) {
+    file = fopen(argv[i], "r");
+    if (file == NULL) {
+      printf("Error: Unable to open file %s\n", argv[i]);
+      return 1;
+    }
+
+    c = w = l = 0;
+    f = d = w = a = 0;
+
+    while ((c = fgetc(file)) != EOF) {
+      if (c == ' ') {
+        w++;
+      } else if (c == '\n') {
+        l++;
+      }
+      c++;
+    }
+
+    printf("File: %s\n", argv[i]);
+    printf("Number of characters: %d\n", c);
+    printf("Number of words: %d\n", w);
+    printf("Number of lines: %d\n", l);
+    printf("Number of single line C comments: %d\n", f);
+    printf("Number of multiple line C comments: %d\n", d);
+    printf("Number of occurrences of 'for': %d\n", f);
+    printf("Number of occurrences of 'do': %d\n", d);
+    printf("Number of occurrences of 'while': %d\n", w);
+    printf("Number of occurrences of 'and': %d\n", a);
+    printf("\n");
+
+    total_c += c;
+    total_w += w;
+    total_l += l;
+    total_f += f;
+    total_d += d;
+    total_w += w;
+    total_a += a;
+
+    fclose(file);
+  }
+
+  printf("Total number of characters: %d\n", total_c);
+  printf("Total number of words: %d\n", total_w);
+  printf("Total number of lines: %d\n", total_l);
+  printf("Total number of single line C comments: %d\n", total_f);
+    printf("Total number of multiple line C comments: %d\n", total_d);
+    printf("Total number of occurrences of 'for': %d\n", total_f);
+    printf("Total number of occurrences of 'do': %d\n", total_d);
+    printf("Total number of occurrences of 'while': %d\n", total_w);
+    printf("Total number of occurrences of 'and': %d\n", total_a);
+
+    return 0;
+}

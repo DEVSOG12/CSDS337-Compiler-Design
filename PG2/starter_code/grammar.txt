@@ -1,0 +1,30 @@
+type -> int | float | string
+varDec -> type ID
+varDecs -> varDecs ; varDec | varDec | ε
+
+funDec -> type ID (params) stmt
+params -> paramsList | ε
+paramList -> paramList, ID | ID
+
+stmt -> exprStmt | compoundStmt | selStmt 
+      | iterStmt | jumpStmt
+exprStmt -> expr ; | ;
+compoundStmt -> {varDecs stmts}
+stmts -> stmts stmt | ε
+selStmt -> IF ( expr ) stmt ELSE stmt
+           | IF ( expr ) stmt
+iterStmt -> while ( expr ) stmt
+jumpStmt -> break ; | return ; | return expr ;
+expr -> orExpr | ID = expr
+orExpr -> andExpr | orExpr OR andExpr
+andExpr -> unaryRelExpr | andExpr AND unaryRelExpr
+unaryRelExpr -> NOT unaryRelExpr | relExpr
+relExpr -> term relop term | term
+relop -> > | < | >= | <= | == | !=
+term -> factor | term + factor | term - factor
+factor -> primary | factor * primary | factor / primary
+        | factor % primary
+primary -> ID | (expr) | call | constant
+call -> ID ( args ) | ID ( )
+args -> args, expr | expr
+constant -> INT_CONST | FLOAT_CONST | STR_CONST

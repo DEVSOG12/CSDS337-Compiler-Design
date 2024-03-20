@@ -1,0 +1,24 @@
+[
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-o",
+            "parser",
+            "parser.tab.c"
+        ],
+        "directory": "/home/hubba/compilers_lab",
+        "file": "parser.tab.c"
+    },
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-o",
+            "parser",
+            "lex.yy.c"
+        ],
+        "directory": "/home/hubba/compilers_lab",
+        "file": "lex.yy.c"
+    }
+]

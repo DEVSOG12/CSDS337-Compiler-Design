@@ -1,0 +1,125 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{lipsum} %This package just generates Lorem Ipsum filler text. 
+\usepackage{fullpage} % changes the margin
+\usepackage[a4paper, total={7in, 10in}]{geometry}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb,amsthm}  % assumes amsmath package installed
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{tikz}
+    \usetikzlibrary{shapes,arrows}
+    \usetikzlibrary{arrows,calc,positioning}
+
+    \tikzset{
+        block/.style = {draw, rectangle,
+            minimum height=1cm,
+            minimum width=1.5cm},
+        input/.style = {coordinate,node distance=1cm},
+        output/.style = {coordinate,node distance=4cm},
+        arrow/.style={draw, -latex,node distance=2cm},
+        pinstyle/.style = {pin edge={latex-, black,node distance=2cm}},
+        sum/.style = {draw, circle, node distance=1cm},
+    }
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage[shortlabels]{enumitem}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+\usepackage{alphabeta}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+
+\newenvironment{problem}[2][Problem]
+    { \begin{mdframed}[backgroundcolor=gray!20] \textbf{#1 #2} \\}
+    {  \end{mdframed}}
+
+% Define solution environment
+\newenvironment{solution}
+    {\textit{Solution:}}
+    {}
+
+\renewcommand{\qed}{\quad\qedsymbol}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\noindent
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\large\textbf{Oreofe Solarin} \hfill \textbf{Programming Homework - 2}   \\
+Email: ons8@case.edu \hfill ID:  \\
+\normalsize Course: CSDS 337 - Compiler Design \hfill Term: Spring 2024\\
+Instructor: Dr. Vipin Chaudhary \hfill Due Date: Feb 26, 2024 \\ \\
+Number of hours delay for this Problem Set: \hfill Put hours here\\
+Cumulative number of hours delay so far: \hfill 3 \\ \\
+I discussed this homework with: \hfill Google \\
+
+\noindent\rule{7in}{2.8pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Problem 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{problem}{1: 100\%}
+  Using Flex and Bison, implement a lexer and parser for the C subset described by the following context-free grammar:
+
+\begin{verbatim}
+program -> decList | ε
+decList -> decList dec | dec
+dec -> funDef | funDec
+
+type -> "int" | "float" | "string" | "bool" | "void"
+varDec -> type ID
+varDecs -> varDecs varDec ; | ε
+
+funDec -> type ID ( params ) ;
+funDef -> type ID (params) { varDecs stmts }
+params -> paramsList | ε
+paramList -> paramList , type ID | type ID
+
+stmt -> exprStmt | { stmts } | selStmt
+     | iterStmt | jumpStmt
+exprStmt -> expr ; | ;
+stmts -> stmts stmt | ε
+selStmt -> IF ( expr ) stmt ELSE stmt
+       	| IF ( expr ) stmt
+iterStmt -> while ( expr ) stmt
+jumpStmt -> break ; | return ; | return expr ;
+expr -> orExpr | ID = expr
+orExpr -> andExpr | orExpr OR andExpr
+andExpr -> unaryRelExpr | andExpr AND unaryRelExpr
+unaryRelExpr -> NOT unaryRelExpr | relExpr
+relExpr -> term relop term | term
+relop -> > | < | >= | <= | == | !=
+term -> factor | term + factor | term - factor
+factor -> primary | factor * primary | factor / primary
+    	| factor % primary
+primary -> ID | (expr) | call | constant
+call -> ID ( args ) | ID ( )
+args -> args, expr | expr
+constant -> INT_LIT | FLOAT_LIT | STR_LIT
+\end{verbatim}
+
+  You will need a lexer capable of reading the tokens used in above grammar (including simple ones like semicolons, commas, etc, but also more complicated regular expressions such as those needed for string literals).\par
+  Starter code has been provided with a few examples filled in for both the lexer and parser. A makefile has also been provided --- run \verb|make| in the directory containing the code to generate the lexer and the parser.\par
+  Your completed code should generate a parse tree for any valid input to the program, or otherwise throw a syntax error. Code has been provided to draw the parse trees for you using \verb|graphviz|. The starter code will generate a \verb|parsetree.dot| file, from which you can run the command \texttt{dot -Tpng parsetree.dot > tree.png} to create an image of the parse tree. The specific appearance and structure of the parse tree may vary somewhat with your implementation (e.g. the names of nodes may be different), but the overall structure must be correct.\par
+\end{problem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Deliverables
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bf{Deliverables:} A zip file containing
+\begin{itemize}
+    \item All files from the starter code you were given, plus your changes
+    %\item A text file containing a simple list of all changes you made to the source files, clearly labeled
+    \item A text file marked readme that contains:
+    \begin{itemize}
+        \item Full name and Case ID
+        \item (not required) any special notes about your implementation the grader should be aware of
+    \end{itemize}
+\end{itemize}
+
+\noindent\rule{7in}{2.8pt}
+\end{document}
+ 
