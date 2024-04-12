@@ -49,7 +49,6 @@ int main() {
     verifyFunction(*addIntFloatFunc);
 
     // Problem 5: Create a function named `conditional` with control flow.
-//    Adding things together in a linear fashion is fun, but what about temporary variables and control ﬂow? Create a function called ‘conditional‘ , it will take a boolean input ( 1-bit integer) and output a 32-bit integer. Allocate a mutable variable stored on the stack in the entry block. If the input parameter is true, store a ‘3‘ to the variable, else store a ‘5‘ . Using only one add instruction in the entire function, return the value of the stored variable added with ‘1 1‘ . The function should return ‘14‘ if the parameter is true or ‘16‘ if it is false. **DO NOTOPTIMIZE THIS FUNCTION YOURSELF.** The point of this part is to make sure you understand control ﬂow and mutable stack variable
     FunctionType *conditionalFuncType = FunctionType::get(Type::getInt32Ty(context), {Type::getInt1Ty(context)}, false);
     Function *conditionalFunc = Function::Create(conditionalFuncType, Function::ExternalLinkage, "conditional", mod);
     entry = BasicBlock::Create(context, "entry", conditionalFunc);
@@ -127,6 +126,69 @@ int main() {
     for (auto &func : *mod) {
         fpm.run(func);
     }
+
+
+    // Hello World
+    FunctionType *helloWorldFuncType = FunctionType::get(Type::getVoidTy(context), false);
+    Function *helloWorldFunc = Function::Create(helloWorldFuncType, Function::ExternalLinkage, "helloWorld", mod);
+    entry = BasicBlock::Create(context, "entry", helloWorldFunc);
+    builder.SetInsertPoint(entry);
+    Value *helloWorldStr = builder.CreateGlobalStringPtr("Hello, World!\n");
+    builder.CreateCall(mod->getOrInsertFunction("puts", Type::getInt32Ty(context), Type::getInt8PtrTy(context), nullptr), helloWorldStr);
+    builder.CreateRetVoid();
+    verifyFunction(*helloWorldFunc);
+
+    // Make a function’s arguments mutable local to the function by storing them into stack variables.
+    FunctionType *mutableArgsFuncType = FunctionType::get(Type::getInt32Ty(context), {Type::getInt32Ty(context), Type::getInt32Ty(context)}, false);
+    Function *mutableArgsFunc = Function::Create(mutableArgsFuncType, Function::ExternalLinkage, "mutableArgs", mod);
+    entry = BasicBlock::Create(context, "entry", mutableArgsFunc);
+    builder.SetInsertPoint(entry);
+    Argument *mutableArg1 = &*mutableArgsFunc->arg_begin();
+    Argument *mutableArg2 = &*(mutableArgsFunc->arg_begin() + 1);
+    AllocaInst *mutableArg1Stack = builder.CreateAlloca(Type::getInt32Ty(context));
+    AllocaInst *mutableArg2Stack = builder.CreateAlloca(Type::getInt32Ty(context));
+    builder.CreateStore(mutableArg1, mutableArg1Stack);
+    builder.CreateStore(mutableArg2, mutableArg2Stack);
+    Value *sumMutableArgs = builder.CreateAdd(builder.CreateLoad(Type::getInt32Ty(context), mutableArg1Stack), builder.CreateLoad(Type::getInt32Ty(context), mutableArg2Stack));
+    builder.CreateRet(sumMutableArgs);
+    verifyFunction(*mutableArgsFunc);
+
+    // Declare the ‘malloc‘ and ‘free‘ functions and call them in diﬀerent functions to play with heap memory.
+    FunctionType *mallocFuncType = FunctionType::get(Type::getInt8PtrTy(context), {Type::getInt64Ty(context)}, false);
+    Function *mallocFunc = Function::Create(mallocFuncType, Function::ExternalLinkage, "malloc", mod);
+    FunctionType *freeFuncType = FunctionType::get(Type::getVoidTy(context), {Type::getInt8PtrTy(context)}, false);
+    Function *freeFunc = Function::Create(freeFuncType, Function::ExternalLinkage, "free", mod);
+    FunctionType *heapMemoryFuncType = FunctionType::get(Type::getInt32Ty(context), false);
+    Function *heapMemoryFunc = Function::Create(heapMemoryFuncType, Function::ExternalLinkage, "heapMemory", mod);
+    entry = BasicBlock::Create(context, "entry", heapMemoryFunc);
+    builder.SetInsertPoint(entry);
+    Value *mallocCall = builder.CreateCall(mallocFunc, ConstantInt::get(Type::getInt64Ty(context), 8));
+    builder.CreateCall(freeFunc, mallocCall);
+    builder.CreateRet(ConstantInt::get(Type::getInt32Ty(context), 0));
+    verifyFunction(*heapMemoryFunc);
+
+    // Make a while or for loop with LLVM.
+    FunctionType *whileLoopFuncType = FunctionType::get(Type::getInt32Ty(context), false);
+    Function *whileLoopFunc = Function::Create(whileLoopFuncType, Function::ExternalLinkage, "whileLoop", mod);
+    entry = BasicBlock::Create(context, "entry", whileLoopFunc);
+    builder.SetInsertPoint(entry);
+    AllocaInst *whileLoopVar = builder.CreateAlloca(Type::getInt32Ty(context));
+    builder.CreateStore(ConstantInt::get(Type::getInt32Ty(context), 0), whileLoopVar);
+    BasicBlock *whileCond = BasicBlock::Create(context, "whileCond", whileLoopFunc);
+    BasicBlock *whileBody = BasicBlock::Create(context, "whileBody", whileLoopFunc);
+    BasicBlock *whileEnd = BasicBlock::Create(context, "whileEnd", whileLoopFunc);
+    builder.CreateBr(whileCond);
+    builder.SetInsertPoint(whileCond);
+    Value *whileCondVal = builder.CreateLoad(Type::getInt32Ty(context), whileLoopVar);
+    builder.CreateCondBr(builder.CreateICmpSLT(whileCondVal, ConstantInt::get(Type::getInt32Ty(context), 10)), whileBody, whileEnd);
+    builder.SetInsertPoint(whileBody);
+    Value *whileBodyVal = builder.CreateLoad(Type::getInt32Ty(context), whileLoopVar);
+    builder.CreateStore(builder.CreateAdd(whileBodyVal, ConstantInt::get(Type::getInt32Ty(context), 1)), whileLoopVar);
+    builder.CreateBr(whileCond);
+    builder.SetInsertPoint(whileEnd);
+    builder.CreateRet(builder.CreateLoad(Type::getInt32Ty(context), whileLoopVar));
+    verifyFunction(*whileLoopFunc);
+
 
     return 0;
 }
