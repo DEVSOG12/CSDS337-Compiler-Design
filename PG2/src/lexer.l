@@ -13,17 +13,18 @@ std::stringstream ss;
 
 "int"                     { return INT_TYPE; }
 "float"                   { return FLOAT_TYPE; }
-"string"                  { return STRING_TYPE; }
+"str"                  { return STRING_TYPE; }
 "bool"                    { return BOOL_TYPE; }
-"void"                    { return VOID_TYPE; }
-";"                       { return SEMICOLON; }
 "("                       { return LPAREN; }
 ")"                       { return RPAREN; }
 "{"                       { return LBRACE; }
 "}"                       { return RBRACE; }
 ","                       { return COMMA; }
+"def"                     { return DEF; }
 "if"                      { return IF; }
 "else"                    { return ELSE; }
+"elif"                    { return ELIF; }
+"for"                     { return FOR; }
 "while"                   { return WHILE; }
 "break"                   { return BREAK; }
 "return"                  { return RETURN; }
@@ -42,6 +43,7 @@ std::stringstream ss;
 "*"                       { return MULTIPLY; }
 "/"                       { return DIVIDE; }
 "%"                       { return MODULO; }
+"False" | "True" {yylval.boolval = strcmp(yytext, "True") == 0; return BOOL_LITERAL;}
 [0-9]+                    { yylval.intval = atoi(yytext); return INT_LITERAL; }
 [0-9]+"."[0-9]*           { yylval.fltval = atof(yytext); return FLOAT_LITERAL; }
 \"                        { BEGIN strlit; ss.str(std::string()); }
